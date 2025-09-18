@@ -17,7 +17,7 @@ if st.button('Predict'):
         'petal_width': petal_width
     }
     try:
-        response = requests.post('https://iris-app-155173250771.us-central1.run.app/predict', json=data)
+        response = requests.post('https://iris-app-797035919127.us-east4.run.app/predict', json=data)
         if response.status_code == 200:
             prediction = response.json()['prediction']
             st.success(f'Predicted species: {prediction}')
