@@ -25,3 +25,4 @@ if st.button('Predict'):
             st.error(f'Error occurred during prediction. Status code: {response.status_code}')
     except requests.exceptions.RequestException as e:
         st.error(f'Error occurred during prediction: {str(e)}')
+# temp
