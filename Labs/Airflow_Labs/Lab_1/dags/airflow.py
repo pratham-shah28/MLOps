@@ -2,66 +2,62 @@
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 from datetime import datetime, timedelta
-from src.lab import load_data, data_preprocessing, build_save_model,load_model_elbow
+from src.lab import (
+    load_training_data,
+    preprocess_training_data,
+    train_and_save_classifier,
+    predict_with_saved_model,
+)
 
-from airflow import configuration as conf
 
-# Enable pickle support for XCom, allowing data to be passed between tasks
-conf.set('core', 'enable_xcom_pickling', 'True')
-
-# Define default arguments for your DAG
 default_args = {
     'owner': 'your_name',
     'start_date': datetime(2025, 1, 15),
-    'retries': 0, # Number of retries in case of task failure
-    'retry_delay': timedelta(minutes=5), # Delay before retries
+    'retries': 0,
+    'retry_delay': timedelta(minutes=5),
 }
 
-# Create a DAG instance named 'Airflow_Lab1' with the defined default arguments
 dag = DAG(
     'Airflow_Lab1',
     default_args=default_args,
-    description='Dag example for Lab 1 of Airflow series',
-    schedule_interval=None,  # Set the schedule interval or use None for manual triggering
+    description='Classification pipeline: preprocess -> train RF -> predict',
+    schedule_interval=None,
     catchup=False,
 )
 
-# Define PythonOperators for each function
-
-# Task to load data, calls the 'load_data' Python function
-load_data_task = PythonOperator(
-    task_id='load_data_task',
-    python_callable=load_data,
-    dag=dag,
-)
-# Task to perform data preprocessing, depends on 'load_data_task'
-data_preprocessing_task = PythonOperator(
-    task_id='data_preprocessing_task',
-    python_callable=data_preprocessing,
-    op_args=[load_data_task.output],
-    dag=dag,
-)
-# Task to build and save a model, depends on 'data_preprocessing_task'
-build_save_model_task = PythonOperator(
-    task_id='build_save_model_task',
-    python_callable=build_save_model,
-    op_args=[data_preprocessing_task.output, "model.sav"],
-    provide_context=True,
-    dag=dag,
-)
-# Task to load a model using the 'load_model_elbow' function, depends on 'build_save_model_task'
-load_model_task = PythonOperator(
-    task_id='load_model_task',
-    python_callable=load_model_elbow,
-    op_args=["model.sav", build_save_model_task.output],
+# Locating training CSV
+load_training_data_task = PythonOperator(
+    task_id='load_training_data',
+    python_callable=load_training_data,
     dag=dag,
 )
 
+# Fitting imputer+scaler, saving artifacts, persisting matrices to disk
+preprocess_training_data_task = PythonOperator(
+    task_id='preprocess_training_data',
+    python_callable=preprocess_training_data,
+    op_args=[load_training_data_task.output],
+    dag=dag,
+)
 
+# Training RandomForest and save model/model.sav
+train_and_save_classifier_task = PythonOperator(
+    task_id='train_and_save_classifier',
+    python_callable=train_and_save_classifier,
+    op_args=[preprocess_training_data_task.output, "model.sav"],
+    dag=dag,
+)
 
-# Set task dependencies
-load_data_task >> data_preprocessing_task >> build_save_model_task >> load_model_task
+# Predicting on data/test.csv with saved artifacts
+predict_with_saved_model_task = PythonOperator(
+    task_id='predict_with_saved_model',
+    python_callable=predict_with_saved_model,
+    op_args=[train_and_save_classifier_task.output, preprocess_training_data_task.output],
+    dag=dag,
+)
 
-# If this script is run directly, allow command-line interaction with the DAG
+# Order
+load_training_data_task >> preprocess_training_data_task >> train_and_save_classifier_task >> predict_with_saved_model_task
+
 if __name__ == "__main__":
     dag.cli()
