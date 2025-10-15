@@ -26,13 +26,13 @@ To dockerize the application run
 Cloud Build takes the directory you are currently in (or the path you specify) and looks for a Dockerfile or other build instructions to create a Docker container.
 
 ```
-gcloud builds submit --tag gcr.io/[YOUR_PROJ_ID]/iris-app
+gcloud builds submit --tag gcr.io/mlops-472423/wine-app
 ```  
 
 Deploying container to Cloud Run service
 
 ```
-gcloud run deploy iris-app --image gcr.io/[YOUR_PROJ_ID]/iris-app --platform managed --port 8501 --allow-unauthenticated   
+gcloud run deploy wine-app --image gcr.io/mlops-472423/wine-app --platform managed --port 8501 --allow-unauthenticated   
 ```
 
 Once the application is deployed you can update the deployed URL in your frontend source code (streamlit_app.py). then run 

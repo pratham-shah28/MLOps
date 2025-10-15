@@ -1,21 +1,47 @@
 from flask import Flask, request, jsonify
-from predict import predict_iris
+from predict import predict_wine
 import os
+import numpy as np
 
 app = Flask(__name__)
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    data = request.get_json()  # Get data as JSON
-    sepal_length = float(data['sepal_length'])
-    sepal_width = float(data['sepal_width'])
-    petal_length = float(data['petal_length'])
-    petal_width = float(data['petal_width'])
+    # Accept JSON or form-encoded
+    data = request.get_json(silent=True) or request.form
 
-    print(sepal_length, sepal_width, petal_length, petal_width)
+    required = [
+        'alcohol', 'malic_acid', 'ash', 'alcalinity_of_ash', 'magnesium',
+        'total_phenols', 'flavanoids', 'nonflavanoid_phenols', 'proanthocyanins',
+        'color_intensity', 'hue', 'od280/od315_of_diluted_wines', 'proline'
+    ]
 
-    prediction = predict_iris(sepal_length, sepal_width, petal_length, petal_width)
-    return jsonify({'prediction': prediction})
+    # Basic validation
+    missing = [k for k in required if k not in data]
+    if missing:
+        return jsonify({'error': f'missing fields: {missing}'}), 400
+
+    try:
+        features = [
+            float(data['alcohol']),
+            float(data['malic_acid']),
+            float(data['ash']),
+            float(data['alcalinity_of_ash']),
+            float(data['magnesium']),
+            float(data['total_phenols']),
+            float(data['flavanoids']),
+            float(data['nonflavanoid_phenols']),
+            float(data['proanthocyanins']),
+            float(data['color_intensity']),
+            float(data['hue']),
+            float(data['od280/od315_of_diluted_wines']),
+            float(data['proline'])
+        ]
+    except (TypeError, ValueError) as e:
+        return jsonify({'error': f'invalid input types: {str(e)}'}), 400
+
+    pred = predict_wine(features)
+    return jsonify({'prediction': int(pred)})
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8080)))

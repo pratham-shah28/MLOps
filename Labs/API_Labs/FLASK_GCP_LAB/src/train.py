@@ -1,27 +1,26 @@
 import joblib
 import os
-import pandas as pd 
-from sklearn.linear_model import LogisticRegression
+import pandas as pd
+from sklearn.datasets import load_wine
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
-
-def run_training(): 
+def run_training():
     """
-    Train the model
+    Train the model (Wine dataset + RandomForest, no external CSV)
     """
-    # Read the training data 
-    dataset = pd.read_csv('data/IRIS.csv')
+    # Load the dataset from sklearn
+    data = load_wine(as_frame=True)
+    X = data.data
+    y = data.target
 
-    # Split into labels and targets
-    X = dataset.drop("species", axis=1).copy()
-    y = dataset["species"].copy()
-
-    # Create train and test set
+    # Train/test split
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.25, random_state=26)
+        X, y, test_size=0.25, random_state=26
+    )
 
-    # Training the model
-    model = LogisticRegression(random_state=26)
+    # Train model
+    model = RandomForestClassifier(n_estimators=200, random_state=26)
     model.fit(X_train, y_train)
     model.feature_names = X.columns
 
