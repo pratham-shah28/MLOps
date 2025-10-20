@@ -1,5 +1,5 @@
 [core]
-    no_scm = True
     remote = lab2
 ['remote "lab2"']
     url = gs://dvc_bucket_lab
+    credentialpath = /Users/prathamshah/Desktop/projects/mlops 2/MLOps/Labs/Data_Labs/DVC_Labs/Lab_1/dvc-lab-475722-b5b4da91d205.json

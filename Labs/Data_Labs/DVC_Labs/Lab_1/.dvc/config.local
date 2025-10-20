@@ -1,2 +1,0 @@
-['remote "lab2"']
-    credentialpath = /absolute/path/to/git-action-gcp-3e47dbac54ff.json
