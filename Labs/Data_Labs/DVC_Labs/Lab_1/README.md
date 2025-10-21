@@ -1,5 +1,8 @@
 ## Data Version Control (DVC)
 
+## Changes I made 
+- I added a new file wine-clustering. Modified it and stored a new version and using checkout I got the original version back
+
 - [DVC](https://dvc.org/) is an open-source tool that serves as a powerful asset in the machine learning project toolkit, with a primary focus on data versioning.
 - **Data versioning** is a critical aspect of any ML project. It allows you to track changes and updates in your datasets over time, ensuring you can always recreate, compare, and reference specific dataset versions used in your experiments.
 - In this lab tutorial, we will be utilizing DVC with Google Cloud Storage to enhance data versioning capabilities, ensuring efficient data management and collaboration within your machine learning project.
