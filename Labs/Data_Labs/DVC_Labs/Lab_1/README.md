@@ -1,7 +1,7 @@
 ## Data Version Control (DVC)
 
-## Changes I made 
-- I added a new file wine-clustering. Modified it and stored a new version and using checkout I got the original version back
+###Changes I made 
+- I added a new dataset file named wine-clustering.csv to DVC for tracking. After making modifications to the file, I committed it to record a new data version. Later, using DVC’s checkout command, I restored the original version of the dataset from the project’s data history
 
 - [DVC](https://dvc.org/) is an open-source tool that serves as a powerful asset in the machine learning project toolkit, with a primary focus on data versioning.
 - **Data versioning** is a critical aspect of any ML project. It allows you to track changes and updates in your datasets over time, ensuring you can always recreate, compare, and reference specific dataset versions used in your experiments.
