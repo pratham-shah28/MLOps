@@ -53,19 +53,19 @@ I wrapped both reference and production datasets using Evidently’s `Dataset.fr
 
 ##  What I Learned
 
-### ✔ How dataset choice impacts drift behavior
+###  How dataset choice impacts drift behavior
 Different datasets show different types of drift, and selecting a new dataset helped me understand how domain characteristics affect monitoring results.
 
-### ✔ The importance of correct schema definition
+###  The importance of correct schema definition
 Explicit numerical and categorical column definitions are critical for proper statistical analysis in Evidently.
 
-### ✔ How to model reference vs production data
+###  How to model reference vs production data
 Creating realistic splits taught me how monitoring systems compare historical data with new incoming batches.
 
-### ✔ How to simulate drift effectively
+###  How to simulate drift effectively
 By modifying distributions intentionally, I learned how to test whether drift detection tools work as expected.
 
-### ✔ How Evidently generates and processes reports
+###  How Evidently generates and processes reports
 I gained hands-on experience with:
 - Building definitions
 - Passing datasets into Evidently
